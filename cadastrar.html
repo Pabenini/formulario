@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Restaurante do Veneno - Cadastrar produtos</title>
+        <link rel="stylesheet" href="css/style.css">
+        <script>
+            let produtos = []
+
+            function salvar(){
+                let nome = document.getElementById("nome").value.trim()
+                let preco = document.getElementById("preco").value.trim()
+                let descricao = document.getElementById("descricao").value.trim()
+
+                if (nome == "" || nome.length < 3){
+                    // alert("Preencha o nome do produto")
+                    document.getElementById("erro-nome").style.display = "block"
+                    return false
+                }
+
+                if (preco == "" || preco <= 0){
+                    // alert("Preencha o preço do produto")
+                    document.getElementById("erro-preco").style.display = "block"
+                    return false// não vai enviar o formulário
+                }
+
+                //cria o objeto json do novo produto
+                let novoProduto = {
+                "nome": nome,
+                "preco": preco,
+                "descricao": descricao
+                }
+                
+                //adiciona o novo produto à lista de produtos
+                produtos.push(novoProduto)
+                console.log(produtos)
+
+                document.getElementById("mensagem").style.display = "flex"
+                setTimeout(function(){
+                    document.getElementById("mensagem").style.display = "none"
+                }, 1000)
+                limparForm()
+
+                //recarregar a lista de produtos
+                carregarProdutos()
+
+                return false// não vai enviar o formulário
+            }
+
+            function carregarProdutos(){
+                let tbody = document.getElementsByTagName("tbody")[0]
+                tbody.innerHTML = "" // limpa o conteúdo da tabela antes de adicionar os produtos novamente
+
+                //passar pela lista de produtos
+                for(let contador = 0; contador <= produtos.length - 1; contador++){
+                    //desenhar uma linha na tabela
+                    let produto = produtos[contador]
+
+                    let linha = document.createElement("tr")
+                    linha.innerHTML = `<tr>
+                        <td>${produto.nome}</td>
+                        <td>R$ ${produto.preco}</td>
+                        <td>${produto.descricao}</td>
+                        <td>
+                            <button>Alterar</button>
+                            <button>Excluir</button>
+                        </td>
+                    </tr>`
+                    tbody.appendChild(linha)
+                }
+            }
+
+            function limparForm(){
+                document.getElementById("nome").value = "";
+                document.getElementById("preco").value = "";
+                document.getElementById("descricao").value = "";
+                document.getElementById("nome").focus()
+            }
+
+            function limparErro(id){
+                document.getElementById(id).style.display = "none"
+            }
+
+        </script>
+    </head>
+    <body>
+        <a href="index.html">Voltar</a>
+        <h1>Cadastro de Produtos</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Descrição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+
+        <form name="form-cadastro" id="form-cadastro" method="post" onsubmit="return salvar()">
+            <div class="form-grupo">
+                <label>Nome do Produto</label>
+                <input type="text" name="nome" id="nome" maxlength="150" onkeydown="limparErro('erro-nome')"/>
+                <div class="erro" id="erro-nome">Preencha o nome do produto</div>
+            </div>
+            <div class="form-grupo">
+                <label>Preço</label>
+                <input type="number" name="preco" id="preco" step="0.1" onkeydown="limparErro('erro-preco')"/>
+                <div class="erro" id="erro-preco">Preencha o preço do produto</div>
+            </div>
+            <div class="form-grupo">
+                <label>Descrição (opcional)</label>
+                <textarea name="descricao" id="descricao" rows="5" cols="40"></textarea>
+            </div>
+            <div class="form-grupo">
+                <input type="submit" value="Salvar">
+            </div>
+        </form>
+        <div id="mensagem">
+            <p>Produto cadastrado com sucesso!</p>
+        </div>
+    </body>
+</html>
